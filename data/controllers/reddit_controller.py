@@ -113,15 +113,3 @@ class RedditController:
                 "data": None
             }
     
-    def get_available_listing_methods(self):
-        """Get available listing methods and their descriptions"""
-        return {
-            "hot": "Most popular content right now",
-            "new": "Most recent content", 
-            "top": "Best posts in the specified timeframe",
-            "rising": "Posts gaining traction quickly"
-        }
-    
-    def get_available_time_filters(self):
-        """Get available time filters for 'top' method"""
-        return ["all", "day", "week", "month", "year"]
