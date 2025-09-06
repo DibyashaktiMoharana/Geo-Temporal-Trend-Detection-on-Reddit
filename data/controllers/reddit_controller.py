@@ -57,20 +57,20 @@ class RedditController:
             else:
                 raise ValueError(f"Invalid listing method: {listing_method}. Use 'hot', 'new', 'top', or 'rising'")
             
-            # Extract post data with 6 months filtering
-            import time
-            six_months_ago = time.time() - (6 * 30 * 24 * 60 * 60)  # 6 months in seconds
+            # import time
+            # six_months_ago = time.time() - (6 * 30 * 24 * 60 * 60)  # 6 months in seconds
             
             async for post in posts:
-                # Filter posts from last 6 months
-                if post.created_utc < six_months_ago:
-                    break  # Stop when we reach posts older than 6 months
+
+                # if post.created_utc < six_months_ago:
+
                 
                 post_data = {
                     "title": post.title,
                     "selftext": post.selftext,
                     "upvote_ratio": post.upvote_ratio,
                     "created_utc": post.created_utc,
+                    # add logic to convert utc to local time
                     "permalink": post.permalink,
                     "subreddit": subreddit_name.lower(),
                 }
