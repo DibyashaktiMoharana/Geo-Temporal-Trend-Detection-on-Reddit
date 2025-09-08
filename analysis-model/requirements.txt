@@ -1,0 +1,6 @@
+pandas
+langdetect
+spacy
+sentence-transformers
+scikit-learn
+google-generativeai
