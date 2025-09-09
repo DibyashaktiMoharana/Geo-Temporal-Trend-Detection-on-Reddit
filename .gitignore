@@ -138,6 +138,9 @@ data/scripts/__pycache__/
 data/env/
 data/.env
 
+sarvam/.env
+sarvam/env/
+
 # IDE
 .vscode/
 .idea/
