@@ -1,6 +1,11 @@
 pandas
+numpy
 langdetect
 spacy
 sentence-transformers
 scikit-learn
 google-generativeai
+flask
+flask-cors
+gunicorn
+python-dotenv
