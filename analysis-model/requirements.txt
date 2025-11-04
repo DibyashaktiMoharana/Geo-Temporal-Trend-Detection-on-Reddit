@@ -9,3 +9,5 @@ flask
 flask-cors
 gunicorn
 python-dotenv
+sarvamai
+requests

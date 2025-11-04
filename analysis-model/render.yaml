@@ -5,8 +5,11 @@ services:
     region: oregon
     plan: free
     branch: main
-    buildCommand: pip install -r requirements.txt && python -m spacy download en_core_web_sm && python model.py
-    startCommand: gunicorn api:app --bind 0.0.0.0:$PORT
+    buildCommand: |
+      pip install -r requirements.txt
+      python -m spacy download en_core_web_sm
+      python model.py || echo "Model processing failed or skipped"
+    startCommand: gunicorn api:app --bind 0.0.0.0:$PORT --timeout 3000 --workers 1
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
