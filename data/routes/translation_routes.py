@@ -1,7 +1,5 @@
-from typing import Optional
-from fastapi import FastAPI, HTTPException
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
-from fastapi.middleware.cors import CORSMiddleware
 from sarvamai import SarvamAI
 import logging
 import os
@@ -13,15 +11,8 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
+# Create router
+router = APIRouter(prefix="/api/translation", tags=["translation"])
 
 # --- Request Models ---
 class TranslationRequest(BaseModel):
@@ -140,7 +131,7 @@ async def auto_translate_to_english(text: str) -> dict:
         raise HTTPException(status_code=500, detail=f"Auto translation failed: {str(e)}")
 
 # --- Endpoint: /translate ---
-@app.post("/translate")
+@router.post("/translate")
 async def translate_text(req: TranslationRequest) -> dict:
     """
     Translate text from specified Indian language to English
@@ -175,7 +166,7 @@ async def translate_text(req: TranslationRequest) -> dict:
         raise HTTPException(status_code=500, detail=str(e))
 
 # --- Endpoint: /auto-translate ---
-@app.post("/auto-translate")
+@router.post("/auto-translate")
 async def auto_translate_text(req: AutoTranslateRequest) -> dict:
     """
     Automatically detect language and translate text to English
@@ -192,7 +183,7 @@ async def auto_translate_text(req: AutoTranslateRequest) -> dict:
         raise HTTPException(status_code=500, detail=str(e))
 
 # --- Endpoint: /detect-language ---
-@app.post("/detect-language")
+@router.post("/detect-language")
 async def detect_text_language(req: AutoTranslateRequest) -> dict:
     """
     Detect the language of input text using Sarvam AI identify_language endpoint
@@ -207,13 +198,8 @@ async def detect_text_language(req: AutoTranslateRequest) -> dict:
         logger.error(f"Language detection endpoint error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# --- Endpoint: /health ---
-@app.get("/health")
-async def health_check() -> dict:
-    return {"status": "healthy", "service": "sarvam-translation-api"}
-
-# --- Endpoint: /supported_languages ---
-@app.get("/supported_languages")
+# --- Endpoint: /supported-languages ---
+@router.get("/supported-languages")
 async def get_supported_languages() -> dict:
     """
     Get list of supported source languages for translation to English
@@ -223,39 +209,3 @@ async def get_supported_languages() -> dict:
         "target_language": "en-IN (English)",
         "total_languages": len(SUPPORTED_LANGUAGES)
     }
-
-# --- Endpoint: /languages/major ---
-@app.get("/languages/major")
-async def get_major_languages() -> dict:
-    """
-    Get major Indian languages supported for translation
-    """
-    major_languages = {code: name for code, name in SUPPORTED_LANGUAGES.items() if code in [
-        "hi-IN", "bn-IN", "ta-IN", "te-IN", "gu-IN", "kn-IN",
-        "ml-IN", "mr-IN", "pa-IN", "od-IN", "en-IN"
-    ]}
-    return {
-        "major_languages": major_languages,
-        "target_language": "en-IN (English)",
-        "count": len(major_languages)
-    }
-
-# --- Endpoint: /languages/additional ---
-@app.get("/languages/additional")
-async def get_additional_languages() -> dict:
-    """
-    Get additional Indian languages supported for translation
-    """
-    additional_languages = {code: name for code, name in SUPPORTED_LANGUAGES.items() if code in [
-        "as-IN", "brx-IN", "doi-IN", "ks-IN", "kok-IN",
-        "mai-IN", "mni-IN", "ne-IN", "sa-IN", "sat-IN", "sd-IN", "ur-IN"
-    ]}
-    return {
-        "additional_languages": additional_languages,
-        "target_language": "en-IN (English)",
-        "count": len(additional_languages)
-    }
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)

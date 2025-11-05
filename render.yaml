@@ -1,0 +1,47 @@
+services:
+  # Main Backend (Reddit Scraper + Translation API)
+  - type: web
+    name: reddit-backend-api
+    env: python
+    plan: free
+    branch: main
+    autoDeploy: true
+    # Build step: move into data/ and install dependencies
+    buildCommand: |
+      cd data
+      pip install --no-cache-dir --upgrade pip
+      pip install --no-cache-dir -r requirements.txt
+    # Start step: run uvicorn from data/
+    startCommand: |
+      cd data
+      uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: REDDIT_CLIENT_ID
+        sync: false
+      - key: REDDIT_CLIENT_SECRET
+        sync: false
+      - key: REDDIT_USER_AGENT
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      - key: SARVAM_API_KEY
+        sync: false
+
+  # Analysis Model API (optional - uncomment if needed)
+  # - type: web
+  #   name: reddit-analysis-model
+  #   env: python
+  #   plan: free
+  #   branch: main
+  #   autoDeploy: true
+  #   buildCommand: |
+  #     cd analysis-model
+  #     pip install --no-cache-dir --upgrade pip
+  #     pip install --no-cache-dir -r requirements.txt
+  #     python -m spacy download en_core_web_sm
+  #   startCommand: |
+  #     cd analysis-model
+  #     python api.py
+  #   envVars:
+  #     - key: MONGO_URI
+  #       sync: false
