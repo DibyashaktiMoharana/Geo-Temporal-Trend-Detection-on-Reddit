@@ -87,22 +87,26 @@ class RedditController:
             await reddit.close()
             
             # Seed to MongoDB
+            seed_result = None
             try:
-                seedposts(subreddit_name, listing_method)
-                print("Successfully seeded data to MongoDB")
+                seed_result = seedposts(subreddit_name, listing_method)
+                print(f"Successfully seeded data to MongoDB collection: {subreddit_name.lower()}Data")
             except Exception as e:
                 print(f"Error seeding to MongoDB: {e}")
                 print("Posts saved to JSON file only")
             
             return {
                 "success": True,
-                "message": f"Successfully scraped {len(posts_data)} posts",
+                "message": f"Successfully scraped {len(posts_data)} posts from r/{subreddit_name}",
                 "data": {
                     "posts_count": len(posts_data),
                     "json_file": json_filename,
-                    "subreddit": subreddit_name,
+                    "subreddit": subreddit_name.lower(),
+                    "collection_name": f"{subreddit_name.lower()}Data",
                     "listing_method": listing_method,
-                    "time_filter": time_filter
+                    "time_filter": time_filter,
+                    "seeded_to_db": seed_result is not None,
+                    "seed_info": seed_result if seed_result else None
                 }
             }
             
