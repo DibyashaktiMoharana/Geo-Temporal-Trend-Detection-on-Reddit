@@ -2,7 +2,7 @@ import { Activity, Hash, MessageSquare, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { Card, EmptyState, LoadingSpinner, StatCard } from '../components/UI';
 import apiService from '../services/api';
 import { Statistics, TopicDistribution } from '../types';
