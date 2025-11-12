@@ -101,72 +101,78 @@ const Dashboard = () => {
       {/* Charts and Top Topics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Topic Distribution Chart (Donut + Bottom Legend) */}
-        <Card title="Topic Distribution" subtitle="Top 8 topics by post count">
-          {distribution && distribution.length > 0 ? (
-            <div className="flex flex-col items-center">
-              {/* Donut Chart */}
-              <div className="flex justify-center items-center mb-4">
-                <ResponsiveContainer width={280} height={280}>
-                  <PieChart>
-                    <Pie
-                      data={distribution}
-                      dataKey="count"
-                      nameKey="topic_label"
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={70}
-                      outerRadius={110}
-                      startAngle={90}
-                      endAngle={-270}
-                    >
-                      {distribution.map((_, index) => (
-                        <Cell key={cell-${index}} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      formatter={(value: any, name: string) => [
-                        ${value} posts,
-                        name || 'Unknown'
-                      ]}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+       <Card title="Topic Distribution" subtitle="Top 8 topics by post count">
+  {distribution && distribution.length > 0 ? (
+    <div className="flex flex-col items-center">
+      <div className="flex justify-center items-center mb-4">
+        <ResponsiveContainer width={280} height={280}>
+          <PieChart>
+            <Pie
+              data={distribution}
+              dataKey="count"
+              nameKey="topic_label"
+              cx="50%"
+              cy="50%"
+              innerRadius={70}
+              outerRadius={110}
+              startAngle={90}
+              endAngle={-270}
+            >
+              {distribution.map((_, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip
+              formatter={(value: any, name: string) => [
+                `${value} posts`,
+                name || 'Unknown',
+              ]}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
 
-              {/* Bottom Legend - Multiple rows */}
-              <div className="w-full flex flex-wrap justify-center gap-x-4 gap-y-2 px-4">
-                {distribution.map((item, index) => {
-                  const count = item.count || 0;
-                  const percent = distributionTotal > 0 ? (count / distributionTotal) * 100 : 0;
-                  return (
-                    <div 
-                      key={item.topic_label || index} 
-                      className="flex items-center space-x-2 text-sm"
-                    >
-                      <div 
-                        className="w-3 h-3 rounded flex-shrink-0" 
-                        style={{ backgroundColor: COLORS[index % COLORS.length] }} 
-                      />
-                      <span className="text-gray-700 font-medium whitespace-nowrap">
-                        {item.topic_label}
-                      </span>
-                      <span className="text-gray-500 whitespace-nowrap">
-                        ({count.toLocaleString()} • {percent.toFixed(1)}%)
-                      </span>
-                    </div>
-                  );
-                })}
+      {/* Bottom Legend */}
+      <div className="w-full flex flex-wrap justify-center gap-x-4 gap-y-2 px-4">
+        {(() => {
+          const distributionTotal = distribution.reduce(
+            (sum, item) => sum + (item.count || 0),
+            0
+          );
+          return distribution.map((item, index) => {
+            const count = item.count || 0;
+            const percent =
+              distributionTotal > 0 ? (count / distributionTotal) * 100 : 0;
+            return (
+              <div
+                key={item.topic_label || index}
+                className="flex items-center space-x-2 text-sm"
+              >
+                <div
+                  className="w-3 h-3 rounded flex-shrink-0"
+                  style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                />
+                <span className="text-gray-700 font-medium whitespace-nowrap">
+                  {item.topic_label}
+                </span>
+                <span className="text-gray-500 whitespace-nowrap">
+                  ({count.toLocaleString()} • {percent.toFixed(1)}%)
+                </span>
               </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-[300px] text-gray-500">
-              <div className="text-center">
-                <Hash className="w-12 h-12 mx-auto mb-2 text-gray-400" />
-                <p>No topic distribution data available</p>
-              </div>
-            </div>
-          )}
-        </Card>
+            );
+          });
+        })()}
+      </div>
+    </div>
+  ) : (
+    <div className="flex items-center justify-center h-[300px] text-gray-500">
+      <div className="text-center">
+        <Hash className="w-12 h-12 mx-auto mb-2 text-gray-400" />
+        <p>No topic distribution data available</p>
+      </div>
+    </div>
+  )}
+</Card>
 
         {/* Top Topics List */}
         <Card title="Top Topics" subtitle="Most discussed topics">
