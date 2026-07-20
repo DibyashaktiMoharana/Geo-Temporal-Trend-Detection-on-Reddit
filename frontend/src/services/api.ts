@@ -13,7 +13,7 @@ import {
 
 // Use production API or fallback to local proxy
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://reddit-trend-analysis-api.onrender.com/api';
-const SCRAPER_BASE_URL = import.meta.env.VITE_SCRAPER_BASE_URL || 'https://geo-temporal-trend-detection-on-reddit.onrender.com/api';
+const SCRAPER_BASE_URL = '/scrape/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

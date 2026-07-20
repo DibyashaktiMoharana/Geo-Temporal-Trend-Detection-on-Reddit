@@ -1,6 +1,0 @@
-fastapi
-uvicorn
-http.client
-pydantic
-sarvamai
-dotenv
