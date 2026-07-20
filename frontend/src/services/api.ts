@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {
+    FetchPostsResult,
     HealthStatus,
     ScrapeResult,
     SearchResult,
@@ -12,7 +13,7 @@ import {
 
 // Use production API or fallback to local proxy
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://reddit-trend-analysis-api.onrender.com/api';
-const SCRAPER_BASE_URL = '/scrape/api';
+const SCRAPER_BASE_URL = import.meta.env.VITE_SCRAPER_BASE_URL || 'https://geo-temporal-trend-detection-on-reddit.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -106,6 +107,22 @@ export const apiService = {
 
   async getScraperHealth() {
     const { data } = await scraperApi.get('/health');
+    return data;
+  },
+
+  // Fetch scraped posts
+  async fetchScrapedPosts(
+    subreddit: string,
+    limit: number = 10,
+    skip: number = 0
+  ): Promise<FetchPostsResult> {
+    const { data } = await scraperApi.get('/posts/', {
+      params: {
+        subreddit,
+        limit,
+        skip,
+      },
+    });
     return data;
   },
 };

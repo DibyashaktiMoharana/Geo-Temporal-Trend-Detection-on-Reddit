@@ -101,10 +101,28 @@ export interface ScrapeResult {
   status: string;
   message: string;
   data: {
+    posts_count: number;
+    json_file: string;
     subreddit: string;
-    method: string;
+    listing_method: string;
     time_filter: string;
-    posts_saved: number;
-    posts: any[];
+  };
+}
+
+export interface ScrapedPost {
+  _id: string;
+  title: string;
+  selftext: string;
+  upvote_ratio: number;
+  created_utc: number;
+  permalink: string;
+  subreddit: string;
+  created_at: string;
+}
+
+export interface FetchPostsResult {
+  status: string;
+  data: {
+    posts: ScrapedPost[];
   };
 }
